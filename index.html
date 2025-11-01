@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stakeholder Relationship Map</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              manjaro: {
+                mint: '#34BE5B',
+                mintDark: '#2AAE50',
+                cyan: '#00BFA6',
+                bg: '#1B1F23',
+                surface: '#24292E',
+                light: '#2E343A',
+                border: '#3E454B',
+                text: '#E8EDED',
+                textAlt: '#A0A7AD',
+                // Role colors
+                error: '#E05353',     // Detractor
+                warn: '#F2B705',      // Evaluator
+                info: '#4EA1FF',      // Influencer
+                success: '#3CCF91',   // Champion
+                exec: '#A37EFF',      // Executive Sponsor
+                signer: '#00C6B2',    // Signer
+              }
+            }
+          }
+        }
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-manjaro-bg text-manjaro-text">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

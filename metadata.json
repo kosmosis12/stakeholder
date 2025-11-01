@@ -1,0 +1,5 @@
+{
+  "name": "Stakeholder Relationship Map",
+  "description": "An application to visually map, organize, and manage stakeholders for sales accounts. Users can manually add stakeholders, define their roles, and arrange them on a drag-and-drop canvas to understand influence hierarchies. All data is stored locally, with options to export and import for backup.",
+  "requestFramePermissions": []
+}
