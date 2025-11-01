@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stakeholder Relationship Map</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              manjaro: {
+                mint: '#34BE5B',
+                mintDark: '#2AAE50',
+                cyan: '#00BFA6',
+                bg: '#1B1F23',
+                surface: '#24292E',
+                light: '#2E343A',
+                border: '#3E454B',
+                text: '#E8EDED',
+                textAlt: '#A0A7AD',
+                error: '#E05353',
+                warn: '#F2B705',
+                info: '#4EA1FF',
+                success: '#3CCF91',
+                exec: '#A37EFF',
+                signer: '#00C6B2',
+              }
+            },
+            fontFamily: {
+              sans: ['Inter', 'Ubuntu Sans', 'system-ui'],
+              mono: ['Roboto Mono', 'monospace'],
+            },
+            borderRadius: {
+              xl: '16px',
+              '2xl': '24px',
+            },
+            boxShadow: {
+              glow: '0 0 8px rgba(0,191,166,0.6)',
+            },
+          }
+        }
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-zoom-pan-pinch": "https://esm.sh/react-zoom-pan-pinch@3.4.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-manjaro-bg text-manjaro-text">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
