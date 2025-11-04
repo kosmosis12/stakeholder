@@ -8,7 +8,7 @@ interface WelcomeScreenProps {
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onAddAccount }) => {
     return (
         <div className="flex flex-col items-center justify-center h-full text-center text-manjaro-textAlt p-8">
-            <h2 className="text-3xl font-bold text-manjaro-text mb-2">Welcome to the Stakeholder Map</h2>
+            <h2 className="brand-font text-3xl font-extrabold tracking-wide uppercase text-manjaro-text mb-2">STAKEHOLDER</h2>
             <p className="max-w-md mb-8">
                 Visualize buying committees, understand influence hierarchies, and keep track of key players. 
                 Start by creating your first account.

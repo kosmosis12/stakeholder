@@ -14,6 +14,7 @@ export interface Account {
   id: string;
   name: string;
   notes?: string;
+  company_url?: string;
   created_at: string;
 }
 
@@ -27,5 +28,7 @@ export interface Stakeholder {
   x_pos: number;
   y_pos: number;
   notes?: string;
+  linkedin_url?: string;
+  connections?: string[]; // stakeholder IDs this stakeholder is connected to (same account)
   created_at: string;
 }

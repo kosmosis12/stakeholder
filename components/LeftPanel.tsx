@@ -2,19 +2,24 @@ import React, { useState, useRef } from 'react';
 import type { Account, Stakeholder } from '../types';
 import { Role } from '../types';
 import { ROLE_TEXT_COLORS } from '../constants';
-import { PlusIcon, UserPlusIcon, EditIcon, UploadIcon, DownloadIcon } from './icons';
+import { PlusIcon, UserPlusIcon, EditIcon, UploadIcon, DownloadIcon, SunIcon, MoonIcon, TrashIcon } from './icons';
+import { AccountModal } from './AccountModal';
 
 interface LeftPanelProps {
   accounts: Account[];
   activeAccount: Account | null;
   stakeholders: Stakeholder[];
   onSelectAccount: (id: string) => void;
-  onAddAccount: (name: string) => void;
+  onAddAccount: (name: string, company_url?: string) => void;
+  onEditAccount: (id: string, name: string, company_url?: string) => void;
   onAddStakeholder: () => void;
   onEditStakeholder: (stakeholder: Stakeholder) => void;
   onUpdateAccountNotes: (notes: string) => void;
+  onDeleteAccount: (id: string) => void;
   onExport: () => void;
   onImport: (data: { accounts: Account[], stakeholders: Stakeholder[] }) => void;
+  theme: 'dark' | 'light';
+  onToggleTheme: () => void;
 }
 
 export const LeftPanel: React.FC<LeftPanelProps> = ({
@@ -23,19 +28,29 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
   stakeholders,
   onSelectAccount,
   onAddAccount,
+  onEditAccount,
   onAddStakeholder,
   onEditStakeholder,
   onUpdateAccountNotes,
+  onDeleteAccount,
   onExport,
   onImport,
+  theme,
+  onToggleTheme,
 }) => {
-  const [newAccountName, setNewAccountName] = useState('');
+  const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
+  const [isEditAccountModalOpen, setIsEditAccountModalOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleAddAccount = (e: React.FormEvent) => {
-    e.preventDefault();
-    onAddAccount(newAccountName);
-    setNewAccountName('');
+  const handleAccountCreate = (name: string, url?: string) => {
+    onAddAccount(name, url);
+    setIsAccountModalOpen(false);
+  };
+
+  const handleAccountEditSave = (name: string, url?: string) => {
+    if (!activeAccount) return;
+    onEditAccount(activeAccount.id, name, url);
+    setIsEditAccountModalOpen(false);
   };
 
   const handleFileImport = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,7 +76,16 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
   return (
     <aside className="w-64 h-full bg-manjaro-surface border-r border-manjaro-border flex flex-col p-4 space-y-4">
       <div className="flex-shrink-0">
-        <h1 className="text-2xl font-bold text-manjaro-text mb-4">Stakeholder Map</h1>
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="brand-font text-2xl font-extrabold tracking-wide text-manjaro-text">STAKEHOLDER</h1>
+          <button
+            onClick={onToggleTheme}
+            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            className="p-2 rounded-md border border-manjaro-border text-manjaro-textAlt hover:text-manjaro-text hover:bg-manjaro-border"
+          >
+            {theme === 'dark' ? <SunIcon className="w-4 h-4" /> : <MoonIcon className="w-4 h-4" />}
+          </button>
+        </div>
         
         <div className="flex space-x-2 mb-4">
             <button onClick={onExport} className="flex-1 flex items-center justify-center bg-manjaro-light hover:bg-manjaro-border text-manjaro-text font-semibold py-2 px-4 rounded-lg transition duration-200">
@@ -75,27 +99,49 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
 
         <h2 className="text-sm font-bold text-manjaro-mint mb-2 uppercase tracking-wider">ACCOUNTS</h2>
         <div className="space-y-2">
-            <select
-                value={activeAccount?.id || ''}
-                onChange={(e) => onSelectAccount(e.target.value)}
-                className="w-full p-2 bg-manjaro-light border border-manjaro-border rounded-md focus:ring-2 focus:ring-manjaro-mint focus:border-manjaro-mint"
-                disabled={accounts.length === 0}
+            <div className="flex items-center gap-2">
+              <select
+                  value={activeAccount?.id || ''}
+                  onChange={(e) => onSelectAccount(e.target.value)}
+                  className="flex-1 p-2 bg-manjaro-light border border-manjaro-border rounded-md focus:ring-2 focus:ring-manjaro-mint focus:border-manjaro-mint"
+                  disabled={accounts.length === 0}
+              >
+                  <option value="" disabled>Select an account</option>
+                  {accounts.map(acc => (
+                      <option key={acc.id} value={acc.id}>{acc.name}</option>
+                  ))}
+              </select>
+              <button
+                type="button"
+                disabled={!activeAccount}
+                onClick={() => setIsEditAccountModalOpen(true)}
+                className="p-2 text-manjaro-textAlt hover:text-manjaro-text hover:bg-manjaro-border rounded-full disabled:opacity-40 disabled:cursor-not-allowed"
+                title="Edit this account"
+              >
+                <EditIcon className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                disabled={!activeAccount}
+                onClick={() => {
+                  if (!activeAccount) return;
+                  if (window.confirm(`Delete account \"${activeAccount.name}\" and all its stakeholders?`)) {
+                    onDeleteAccount(activeAccount.id);
+                  }
+                }}
+                className="p-2 text-manjaro-textAlt hover:text-manjaro-text hover:bg-manjaro-border rounded-full disabled:opacity-40 disabled:cursor-not-allowed"
+                title="Delete this account"
+              >
+                <TrashIcon className="w-4 h-4" />
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsAccountModalOpen(true)}
+              className="w-full flex items-center justify-center gap-2 bg-manjaro-mint hover:bg-manjaro-mintDark text-manjaro-bg font-bold py-2 px-4 rounded-lg transition duration-200"
             >
-                <option value="" disabled>Select an account</option>
-                {accounts.map(acc => (
-                    <option key={acc.id} value={acc.id}>{acc.name}</option>
-                ))}
-            </select>
-            <form onSubmit={handleAddAccount} className="flex space-x-2">
-                <input
-                    type="text"
-                    value={newAccountName}
-                    onChange={(e) => setNewAccountName(e.target.value)}
-                    placeholder="New account name..."
-                    className="flex-grow p-2 bg-manjaro-light border border-manjaro-border rounded-md focus:ring-2 focus:ring-manjaro-mint focus:border-manjaro-mint placeholder:text-manjaro-textAlt"
-                />
-                <button type="submit" className="p-2 bg-manjaro-mint hover:bg-manjaro-mintDark rounded-md"><PlusIcon className="w-5 h-5"/></button>
-            </form>
+              <PlusIcon className="w-4 h-4" /> Add New Account
+            </button>
         </div>
       </div>
       
@@ -126,15 +172,35 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
           
           <div className="flex-shrink-0">
             <h2 className="text-sm font-bold text-manjaro-mint mb-2 uppercase tracking-wider">ACCOUNT NOTES</h2>
+            {activeAccount.company_url && (
+              <p className="mb-2 text-xs">
+                <a className="text-manjaro-info hover:underline" href={activeAccount.company_url} target="_blank" rel="noreferrer">{activeAccount.company_url}</a>
+              </p>
+            )}
             <textarea
               value={activeAccount.notes || ''}
               onChange={(e) => onUpdateAccountNotes(e.target.value)}
               placeholder="Add notes about this account..."
               className="w-full h-24 p-2 bg-manjaro-light border border-manjaro-border rounded-md resize-none focus:ring-2 focus:ring-manjaro-mint focus:border-manjaro-mint placeholder:text-manjaro-textAlt"
             />
+            
           </div>
         </>
       )}
+      <AccountModal
+        isOpen={isAccountModalOpen}
+        onClose={() => setIsAccountModalOpen(false)}
+        onSave={handleAccountCreate}
+        title="Add New Account"
+      />
+      <AccountModal
+        isOpen={isEditAccountModalOpen}
+        onClose={() => setIsEditAccountModalOpen(false)}
+        onSave={handleAccountEditSave}
+        title="Edit Account"
+        initialName={activeAccount?.name}
+        initialUrl={activeAccount?.company_url}
+      />
     </aside>
   );
 };
