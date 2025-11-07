@@ -65,11 +65,11 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
         <h1 className="text-2xl font-bold text-manjaro-mint mb-4">Stakeholder Map</h1>
         
         <div className="flex space-x-2 mb-4">
-            <button onClick={onExport} className="flex-1 flex items-center justify-center bg-manjaro-light hover:bg-manjaro-border text-manjaro-text font-semibold py-2 px-4 rounded-xl transition duration-200">
-                <DownloadIcon className="w-5 h-5 mr-2" /> Export
+            <button onClick={onExport} className="flex-1 flex items-center justify-center bg-manjaro-light hover:bg-manjaro-border text-manjaro-text font-semibold text-sm py-1 px-3 rounded-lg transition duration-200">
+                <DownloadIcon className="w-4 h-4 mr-2" /> Export
             </button>
-            <button onClick={() => fileInputRef.current?.click()} className="flex-1 flex items-center justify-center bg-manjaro-light hover:bg-manjaro-border text-manjaro-text font-semibold py-2 px-4 rounded-xl transition duration-200">
-                <UploadIcon className="w-5 h-5 mr-2" /> Import
+            <button onClick={() => fileInputRef.current?.click()} className="flex-1 flex items-center justify-center bg-manjaro-light hover:bg-manjaro-border text-manjaro-text font-semibold text-sm py-1 px-3 rounded-lg transition duration-200">
+                <UploadIcon className="w-4 h-4 mr-2" /> Import
             </button>
             <input type="file" ref={fileInputRef} onChange={handleFileImport} className="hidden" accept=".json"/>
         </div>
@@ -128,7 +128,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
           </div>
           
           <div className="flex-shrink-0">
-            <h2 className="text-sm font-semibold text-manjaro-textAlt mb-2">ACCOUNT NOTES</h2>
+            <h2 className="text-sm font-semibold text-white mb-2">ACCOUNT NOTES</h2>
             <textarea
               value={activeAccount.notes || ''}
               onChange={(e) => onUpdateAccountNotes(e.target.value)}
