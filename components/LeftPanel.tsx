@@ -17,6 +17,9 @@ interface LeftPanelProps {
   onUpdateAccountNotes: (notes: string) => void;
   onExport: () => void;
   onImport: (data: { accounts: Account[], stakeholders: Stakeholder[] }) => void;
+  departments: string[];
+  selectedDepartment: string | null;
+  onSelectDepartment: (dept: string | null) => void;
 }
 
 export const LeftPanel: React.FC<LeftPanelProps> = ({
@@ -30,6 +33,9 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
   onUpdateAccountNotes,
   onExport,
   onImport,
+  departments,
+  selectedDepartment,
+  onSelectDepartment,
 }) => {
   const [newAccountName, setNewAccountName] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -107,6 +113,21 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
         <>
           <div className="flex-shrink-0">
             <h2 className="text-sm font-semibold text-manjaro-textAlt mt-4 mb-2">STAKEHOLDERS</h2>
+            {departments.length > 0 && (
+              <div className="mb-2">
+                <label className="block text-xs text-manjaro-textAlt mb-1">Filter by Department</label>
+                <select
+                  value={selectedDepartment || ''}
+                  onChange={(e) => onSelectDepartment(e.target.value || null)}
+                  className="w-full p-2 bg-manjaro-light border border-manjaro-border text-manjaro-text rounded-lg focus:ring-2 focus:ring-manjaro-mint focus:border-manjaro-mint transition"
+                >
+                  <option value="">All Departments</option>
+                  {departments.map((d) => (
+                    <option key={d} value={d}>{d}</option>
+                  ))}
+                </select>
+              </div>
+            )}
             <button onClick={onAddStakeholder} className="w-full flex items-center justify-center bg-manjaro-success hover:bg-manjaro-mint text-white font-semibold py-2 px-4 rounded-xl transition duration-200">
               <UserPlusIcon className="w-5 h-5 mr-2" /> Add Stakeholder
             </button>

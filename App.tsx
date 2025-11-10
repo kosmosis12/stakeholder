@@ -12,6 +12,7 @@ export default function App() {
   const [stakeholders, setStakeholders] = useLocalStorage<Stakeholder[]>('stakeholders', []);
   const [connections, setConnections] = useLocalStorage<Connection[]>('connections', []);
   const [activeAccountId, setActiveAccountId] = useLocalStorage<string | null>('activeAccountId', null);
+  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
   
   const [editingStakeholder, setEditingStakeholder] = useState<Stakeholder | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -122,12 +123,25 @@ export default function App() {
   const accountStakeholders = stakeholders.filter(s => s.account_id === activeAccountId);
   const accountConnections = connections.filter(c => c.account_id === activeAccountId);
 
+  const departments = Array.from(new Set(
+    accountStakeholders.map(s => s.department).filter(Boolean) as string[]
+  )).sort();
+
+  const visibleStakeholders = selectedDepartment
+    ? accountStakeholders.filter(s => s.department === selectedDepartment)
+    : accountStakeholders;
+
+  const visibleConnections = accountConnections.filter(c =>
+    visibleStakeholders.some(s => s.id === c.sourceId) &&
+    visibleStakeholders.some(s => s.id === c.targetId)
+  );
+
   return (
     <div className="flex h-screen w-screen font-sans bg-manjaro-bg text-manjaro-text overflow-hidden">
       <LeftPanel
         accounts={accounts}
         activeAccount={activeAccount}
-        stakeholders={accountStakeholders}
+        stakeholders={visibleStakeholders}
         onSelectAccount={setActiveAccountId}
         onAddAccount={handleAddAccount}
         onAddStakeholder={() => openStakeholderModal(null)}
@@ -135,12 +149,15 @@ export default function App() {
         onUpdateAccountNotes={handleUpdateAccountNotes}
         onExport={exportData}
         onImport={importData}
+        departments={departments}
+        selectedDepartment={selectedDepartment}
+        onSelectDepartment={setSelectedDepartment}
       />
       <main className="flex-1 flex flex-col relative bg-manjaro-surface/50">
         {activeAccount ? (
           <Canvas
-            stakeholders={accountStakeholders}
-            connections={accountConnections}
+            stakeholders={visibleStakeholders}
+            connections={visibleConnections}
             onUpdateStakeholderPosition={handleUpdateStakeholderPosition}
             onEditStakeholder={openStakeholderModal}
             onAddConnection={handleAddConnection}
