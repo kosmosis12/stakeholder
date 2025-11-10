@@ -3,6 +3,7 @@ import React, { useState, useRef } from 'react';
 import type { Account, Stakeholder } from '../types';
 import { Role } from '../types';
 import { ROLE_TEXT_COLORS, ROLE_COLORS } from '../constants';
+import { CrownIcon } from './icons';
 import { PlusIcon, UserPlusIcon, EditIcon, UploadIcon, DownloadIcon } from './icons';
 
 interface LeftPanelProps {
@@ -115,9 +116,21 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
             {stakeholders.map(s => (
               <div key={s.id} className="bg-manjaro-light border border-manjaro-border p-3 rounded-xl flex justify-between items-center hover:border-manjaro-mint/50 transition">
                 <div>
-                  <p className="font-semibold text-manjaro-text">{s.name}</p>
+                  <div className="flex items-center gap-1">
+                    <p className="font-semibold text-manjaro-text">{s.name}</p>
+                    {s.is_department_head && (
+                      <span title="Department Head" className="inline-flex items-center text-manjaro-bg bg-manjaro-dept rounded-full px-1 py-0.5 text-[10px] font-bold">
+                        <CrownIcon className="w-3 h-3 mr-0.5" /> Head
+                      </span>
+                    )}
+                  </div>
                   <p className="text-xs text-manjaro-textAlt">{s.title}</p>
-                  <p className={`text-xs font-bold ${ROLE_TEXT_COLORS[s.role]}`}>{s.role}</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    {s.department && (
+                      <span className="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full text-manjaro-bg bg-manjaro-dept">{s.department}</span>
+                    )}
+                    <span className={`text-[10px] font-bold ${ROLE_TEXT_COLORS[s.role]}`}>{s.role}</span>
+                  </div>
                 </div>
                 <button onClick={() => onEditStakeholder(s)} className="p-2 text-manjaro-textAlt hover:text-manjaro-mint hover:bg-manjaro-border rounded-full transition">
                   <EditIcon className="w-4 h-4"/>

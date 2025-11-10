@@ -27,6 +27,9 @@ export interface Stakeholder {
   x_pos: number;
   y_pos: number;
   notes?: string;
+  // Department bucketing
+  department?: string;
+  is_department_head?: boolean;
   created_at: string;
 }
 

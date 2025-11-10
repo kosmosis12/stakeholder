@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type { Stakeholder } from '../types';
 import { ROLE_COLORS } from '../constants';
+import { CrownIcon } from './icons';
 
 interface StakeholderCardProps {
   stakeholder: Stakeholder;
@@ -121,14 +122,34 @@ export const StakeholderCard: React.FC<StakeholderCardProps> = ({
 
       <div className={`absolute top-0 left-0 right-0 h-1.5 rounded-t-2xl ${ROLE_COLORS[stakeholder.role]}`}></div>
       <div className="mt-2">
-        <p className="font-bold text-manjaro-text truncate">{stakeholder.name}</p>
+        <div className="flex items-center gap-1">
+          <p className="font-bold text-manjaro-text truncate">{stakeholder.name}</p>
+          {stakeholder.is_department_head && (
+            <span title="Department Head" className="inline-flex items-center text-manjaro-bg bg-manjaro-dept rounded-full px-1.5 py-0.5 text-[10px] font-bold">
+              <CrownIcon className="w-3 h-3 mr-1" /> Head
+            </span>
+          )}
+        </div>
         <p className="text-sm text-manjaro-textAlt truncate">{stakeholder.title}</p>
-        <div className={`inline-block text-xs font-semibold px-2 py-0.5 rounded-full mt-2 text-manjaro-bg ${ROLE_COLORS[stakeholder.role]}`}>
-          {stakeholder.role}
+        <div className="flex flex-wrap gap-2 mt-2">
+          {stakeholder.department && (
+            <div className={`inline-block text-xs font-semibold px-2 py-0.5 rounded-full text-manjaro-bg bg-manjaro-dept`}>
+              Dept: {stakeholder.department}
+            </div>
+          )}
+          <div className={`inline-block text-xs font-semibold px-2 py-0.5 rounded-full text-manjaro-bg ${ROLE_COLORS[stakeholder.role]}`}>
+            {stakeholder.role}
+          </div>
         </div>
       </div>
 
       <div className="absolute bottom-full mb-2 w-64 p-3 bg-manjaro-surface border border-manjaro-border rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-30 transform -translate-x-1/4 left-1/2">
+        {stakeholder.department && (
+          <>
+            <h4 className="font-bold text-sm text-manjaro-text">Department:</h4>
+            <p className="text-xs text-manjaro-textAlt mb-2">{stakeholder.department}{stakeholder.is_department_head ? ' (Head)' : ''}</p>
+          </>
+        )}
         {stakeholder.responsibilities && (
           <>
             <h4 className="font-bold text-sm text-manjaro-text">Responsibilities:</h4>
@@ -141,7 +162,7 @@ export const StakeholderCard: React.FC<StakeholderCardProps> = ({
             <p className="text-xs text-manjaro-textAlt">{stakeholder.notes}</p>
           </>
         )}
-        {!stakeholder.responsibilities && !stakeholder.notes && (
+        {!stakeholder.department && !stakeholder.responsibilities && !stakeholder.notes && (
           <p className="text-xs text-manjaro-textAlt italic">No additional details.</p>
         )}
         <div className="absolute bottom-[-5px] left-1/4 w-3 h-3 bg-manjaro-surface border-r border-b border-manjaro-border transform rotate-45"></div>

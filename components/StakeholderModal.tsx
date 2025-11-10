@@ -13,12 +13,15 @@ interface StakeholderModalProps {
 }
 
 export const StakeholderModal: React.FC<StakeholderModalProps> = ({ isOpen, onClose, onSave, onDelete, stakeholder }) => {
+  const [deptOptions, setDeptOptions] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     name: '',
     title: '',
     role: Role.INFLUENCER,
     responsibilities: '',
     notes: '',
+    department: '',
+    is_department_head: false,
   });
 
   useEffect(() => {
@@ -29,6 +32,8 @@ export const StakeholderModal: React.FC<StakeholderModalProps> = ({ isOpen, onCl
         role: stakeholder.role,
         responsibilities: stakeholder.responsibilities || '',
         notes: stakeholder.notes || '',
+        department: stakeholder.department || '',
+        is_department_head: !!stakeholder.is_department_head,
       });
     } else {
       setFormData({
@@ -37,13 +42,38 @@ export const StakeholderModal: React.FC<StakeholderModalProps> = ({ isOpen, onCl
         role: Role.INFLUENCER,
         responsibilities: '',
         notes: '',
+        department: '',
+        is_department_head: false,
       });
     }
   }, [stakeholder, isOpen]);
 
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('stakeholders');
+      if (raw) {
+        const arr = JSON.parse(raw) as Array<{ department?: string }>;
+        const set = new Set<string>();
+        for (const s of arr) {
+          if (s && s.department && s.department.trim()) set.add(s.department.trim());
+        }
+        setDeptOptions(Array.from(set).sort());
+      } else {
+        setDeptOptions([]);
+      }
+    } catch (_) {
+      setDeptOptions([]);
+    }
+  }, [isOpen]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    setFormData(prev => ({ ...prev, [name]: checked }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -72,6 +102,34 @@ export const StakeholderModal: React.FC<StakeholderModalProps> = ({ isOpen, onCl
               required 
               className="mt-1 block w-full bg-manjaro-light border border-manjaro-border text-manjaro-text placeholder-manjaro-textAlt rounded-lg p-2 focus:ring-2 focus:ring-manjaro-mint focus:border-manjaro-mint transition" 
             />
+        </div>
+          <div>
+            <label className="block text-sm font-medium text-manjaro-textAlt mb-1">Department</label>
+            <input
+              type="text"
+              name="department"
+              value={formData.department}
+              onChange={handleChange}
+              list="department-list"
+              placeholder="e.g., Product, Engineering, Customer Success"
+              className="mt-1 block w-full bg-manjaro-light border border-manjaro-border text-manjaro-text placeholder-manjaro-textAlt rounded-lg p-2 focus:ring-2 focus:ring-manjaro-mint focus:border-manjaro-mint transition"
+            />
+            <datalist id="department-list">
+              {deptOptions.map((d) => (
+                <option key={d} value={d} />
+              ))}
+            </datalist>
+            <div className="mt-2 flex items-center gap-2">
+              <input
+                id="is_department_head"
+                type="checkbox"
+                name="is_department_head"
+                checked={formData.is_department_head}
+                onChange={handleCheckbox}
+                className="accent-manjaro-warn"
+              />
+              <label htmlFor="is_department_head" className="text-sm text-manjaro-textAlt">Department Head</label>
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-manjaro-textAlt mb-1">Title</label>
